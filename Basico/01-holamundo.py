@@ -1,2 +1,6 @@
 #Comentario de Hola Mundo
-print("Hola Mundo desde Python")
+saludo="Hola Mundo desde Python"
+print(saludo)
+
+saludo="Hola desde México"
+print(saludo)
