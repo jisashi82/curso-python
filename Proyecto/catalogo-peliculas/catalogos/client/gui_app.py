@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 class Frame(tk.Frame):
     def __init__(self, root=None):
@@ -6,6 +7,7 @@ class Frame(tk.Frame):
         self.root=root
         self.config(width=480, height=320, background='azure')
         self.campos_pelicula()
+        self.tabla_peliculas()
         self.deshabilita_campos()
         self.pack()
     
@@ -81,6 +83,27 @@ class Frame(tk.Frame):
         
     def guardar_datos(self):
         self.deshabilita_campos()
+        
+    def tabla_peliculas(self):
+        self.tabla=ttk.Treeview(self, columns=('Nombre','Duracion', 'Genero'))
+        self.tabla.grid(row=5, column=0, columnspan=4)
+        
+        self.tabla.heading('#0',text='ID')
+        self.tabla.heading('#1',text='NOMBRE')
+        self.tabla.heading('#2',text='DURACION')
+        self.tabla.heading('#3',text='GENERO')
+        
+        self.tabla.insert('',0,text=1,values=('Los Vengadores','1.25','Accion'))
+        
+        #Botones de Editar y Eliminar de la tabla
+        fuenteBtn=('Arial',11,'bold')
+        self.boton_editar=tk.Button(self,text='Editar', command=self.habilitar_campos)
+        self.boton_editar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#58d68d', cursor='hand2', activebackground='#a9dfbf')
+        self.boton_editar.grid(row=6,column=1, padx=10,pady=10)
+        
+        self.boton_eliminar=tk.Button(self,text='Eliminar', command=self.deshabilita_campos)
+        self.boton_eliminar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#ec7063', cursor='hand2', activebackground='#f5b7b1')
+        self.boton_eliminar.grid(row=6,column=2, padx=10,pady=10)
         
         
 def barra_menu(root:tk.Tk):
