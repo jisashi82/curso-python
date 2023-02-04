@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from model import peliculaDAO
 
 class Frame(tk.Frame):
     def __init__(self, root=None):
@@ -82,9 +83,17 @@ class Frame(tk.Frame):
         self.boton_cancelar.config(state='normal')
         
     def guardar_datos(self):
+        pelicula=peliculaDAO.Pelicula(
+            self.mi_nombre.get(),
+            self.mi_duracion.get(), 
+            self.mi_genero.get()
+            )
+        peliculaDAO.guardar(pelicula)
+        self.tabla_peliculas()
         self.deshabilita_campos()
         
     def tabla_peliculas(self):
+        self.lista_peliculas=peliculaDAO.listar()
         self.tabla=ttk.Treeview(self, columns=('Nombre','Duracion', 'Genero'))
         self.tabla.grid(row=5, column=0, columnspan=4)
         
@@ -93,7 +102,8 @@ class Frame(tk.Frame):
         self.tabla.heading('#2',text='DURACION')
         self.tabla.heading('#3',text='GENERO')
         
-        self.tabla.insert('',0,text=1,values=('Los Vengadores','1.25','Accion'))
+        for p in self.lista_peliculas:
+            self.tabla.insert('',tk.END,text=p[0],values=(p[1],p[2],p[3]))
         
         #Botones de Editar y Eliminar de la tabla
         fuenteBtn=('Arial',11,'bold')
@@ -114,14 +124,12 @@ def barra_menu(root:tk.Tk):
         menu_inicio=tk.Menu(barraMenu, tearoff=0)
         barraMenu.add_cascade(label='Inicio', menu=menu_inicio)
         
-        menu_inicio.add_command(label='Crear registro en BD')
-        menu_inicio.add_command(label='Eliminar BD')
+        menu_inicio.add_command(label='Crear registro en BD', command=peliculaDAO.crear_tabla)
+        menu_inicio.add_command(label='Eliminar BD', command=peliculaDAO.borrar_tabla)
         menu_inicio.add_command(label='Salir', command=root.destroy)
         
         barraMenu.add_cascade(label='Consulta', menu='')
         barraMenu.add_cascade(label='Configuracion', menu='') 
         barraMenu.add_cascade(label='Ayuda', menu='')
         
-        
-        
-    
+         
