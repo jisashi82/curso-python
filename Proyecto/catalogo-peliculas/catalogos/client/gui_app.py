@@ -20,13 +20,12 @@ class Frame(tk.Frame):
         return etiqueta
     
     def campos_pelicula(self):
-        #labels de cada campo--------------------------------------------------
-        
+        #labels de cada campo        
         self.label_nombre= self.etiqueta('Nombre',[0,0,10,10])      
         self.label_duracion=self.etiqueta('Duracion', [1,0,10,10]) 
         self.label_genero=self.etiqueta('Genero', [2,0,10,10])
          
-        #Entrys de cada campo-------------------------------------------------
+        #Entrys de cada campo
         self.mi_nombre=tk.StringVar()
         entry_config={'width':50, 'state':'disabled', 'font':('Arial',12)}
         self.entry_nombre=tk.Entry(self, textvariable=self.mi_nombre)
@@ -97,11 +96,18 @@ class Frame(tk.Frame):
         self.tabla=ttk.Treeview(self, columns=('Nombre','Duracion', 'Genero'))
         self.tabla.grid(row=5, column=0, columnspan=4)
         
+        #scrollbar
+        self.scrollbar = ttk.Scrollbar(self,orient=tk.VERTICAL, command=self.tabla.yview)
+        self.scrollbar.grid(row=5, column=4, sticky='ns')
+        self.tabla.configure(yscrollcommand=self.scrollbar.set)
+        
+        #TITULOS DE CABeCERAS DE LA TABLA
         self.tabla.heading('#0',text='ID')
         self.tabla.heading('#1',text='NOMBRE')
         self.tabla.heading('#2',text='DURACION')
         self.tabla.heading('#3',text='GENERO')
         
+        #RECORREMOS LA LISTA DE PELICULAS Y SE INSERTAN EN LA TABLA
         for p in self.lista_peliculas:
             self.tabla.insert('',tk.END,text=p[0],values=(p[1],p[2],p[3]))
         
