@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from model import peliculaDAO
 
 class Frame(tk.Frame):
@@ -7,6 +8,9 @@ class Frame(tk.Frame):
         super().__init__(root)
         self.root=root
         self.config(width=480, height=320, background='azure')
+        
+        self.id_pelicula=None
+        
         self.campos_pelicula()
         self.tabla_peliculas()
         self.deshabilita_campos()
@@ -87,7 +91,11 @@ class Frame(tk.Frame):
             self.mi_duracion.get(), 
             self.mi_genero.get()
             )
-        peliculaDAO.guardar(pelicula)
+        
+        if self.id_pelicula == None:
+            peliculaDAO.guardar(pelicula)
+        else:
+            peliculaDAO.editar(pelicula,self.id_pelicula)
         self.tabla_peliculas()
         self.deshabilita_campos()
         
@@ -113,7 +121,7 @@ class Frame(tk.Frame):
         
         #Botones de Editar y Eliminar de la tabla
         fuenteBtn=('Arial',11,'bold')
-        self.boton_editar=tk.Button(self,text='Editar', command=self.habilitar_campos)
+        self.boton_editar=tk.Button(self,text='Editar', command=self.editar_datos)
         self.boton_editar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#58d68d', cursor='hand2', activebackground='#a9dfbf')
         self.boton_editar.grid(row=6,column=1, padx=10,pady=10)
         
@@ -121,6 +129,21 @@ class Frame(tk.Frame):
         self.boton_eliminar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#ec7063', cursor='hand2', activebackground='#f5b7b1')
         self.boton_eliminar.grid(row=6,column=2, padx=10,pady=10)
         
+        
+    def editar_datos(self):
+        try:
+            self.id_pelicula=self.tabla.item(self.tabla.selection())['text']
+            self.nombre_pelicula=self.tabla.item(self.tabla.selection())['values'][0]
+            self.duracion_pelicula=self.tabla.item(self.tabla.selection())['values'][1]
+            self.genero_pelicula=self.tabla.item(self.tabla.selection())['values'][2]
+            
+            self.habilitar_campos()
+            
+            self.entry_nombre.insert(0,self.nombre_pelicula)
+            self.entry_duracion.insert(0,self.duracion_pelicula)
+            self.entry_genero.insert(0,self.genero_pelicula)
+        except:
+            messagebox.showerror('Edicion de Datos', 'No ha seleccionado ningun registro')
         
 def barra_menu(root:tk.Tk):
     
