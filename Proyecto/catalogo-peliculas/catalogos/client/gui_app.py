@@ -48,7 +48,7 @@ class Frame(tk.Frame):
         
         #Botones ---------------------------------------------------------------
         fuenteBtn=('Arial',11,'bold')
-        self.boton_nuevo=tk.Button(self,text='Nuevo', command=self.habilitar_campos)
+        self.boton_nuevo=tk.Button(self,text='Nuevo', command=self.nuevo_registro)
         self.boton_nuevo.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#58d68d', cursor='hand2', activebackground='#a9dfbf')
         self.boton_nuevo.grid(row=4,column=0, padx=10,pady=10)
         
@@ -59,6 +59,10 @@ class Frame(tk.Frame):
         self.boton_cancelar=tk.Button(self,text='Cancelar', command=self.deshabilita_campos)
         self.boton_cancelar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#ec7063', cursor='hand2', activebackground='#f5b7b1')
         self.boton_cancelar.grid(row=4,column=2, padx=10,pady=10)
+    
+    def nuevo_registro(self):
+        self.id_pelicula=None
+        self.habilitar_campos()
     
     def deshabilita_campos(self):
         self.mi_duracion.set('')
@@ -99,6 +103,29 @@ class Frame(tk.Frame):
         self.tabla_peliculas()
         self.deshabilita_campos()
         
+    def editar_datos(self):
+        try:
+            self.id_pelicula=self.tabla.item(self.tabla.selection())['text']
+            self.nombre_pelicula=self.tabla.item(self.tabla.selection())['values'][0]
+            self.duracion_pelicula=self.tabla.item(self.tabla.selection())['values'][1]
+            self.genero_pelicula=self.tabla.item(self.tabla.selection())['values'][2]
+            
+            self.habilitar_campos()
+            
+            self.entry_nombre.insert(0,self.nombre_pelicula)
+            self.entry_duracion.insert(0,self.duracion_pelicula)
+            self.entry_genero.insert(0,self.genero_pelicula)
+        except:
+            messagebox.showerror('Edicion de Datos', 'No ha seleccionado ningun registro')
+            
+    def eliminar_datos(self):
+        try:
+            self.id_pelicula=self.tabla.item(self.tabla.selection())['text']
+            peliculaDAO.eliminar(self.id_pelicula)
+            self.tabla_peliculas()
+        except:
+            messagebox.showwarning('Eliminando..','Seleccione un registro')
+            
     def tabla_peliculas(self):
         self.lista_peliculas=peliculaDAO.listar()
         self.tabla=ttk.Treeview(self, columns=('Nombre','Duracion', 'Genero'))
@@ -125,25 +152,11 @@ class Frame(tk.Frame):
         self.boton_editar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#58d68d', cursor='hand2', activebackground='#a9dfbf')
         self.boton_editar.grid(row=6,column=1, padx=10,pady=10)
         
-        self.boton_eliminar=tk.Button(self,text='Eliminar', command=self.deshabilita_campos)
+        self.boton_eliminar=tk.Button(self,text='Eliminar', command=self.eliminar_datos)
         self.boton_eliminar.config(width=20, font=fuenteBtn, fg='#f8f9f9', bg='#ec7063', cursor='hand2', activebackground='#f5b7b1')
         self.boton_eliminar.grid(row=6,column=2, padx=10,pady=10)
         
         
-    def editar_datos(self):
-        try:
-            self.id_pelicula=self.tabla.item(self.tabla.selection())['text']
-            self.nombre_pelicula=self.tabla.item(self.tabla.selection())['values'][0]
-            self.duracion_pelicula=self.tabla.item(self.tabla.selection())['values'][1]
-            self.genero_pelicula=self.tabla.item(self.tabla.selection())['values'][2]
-            
-            self.habilitar_campos()
-            
-            self.entry_nombre.insert(0,self.nombre_pelicula)
-            self.entry_duracion.insert(0,self.duracion_pelicula)
-            self.entry_genero.insert(0,self.genero_pelicula)
-        except:
-            messagebox.showerror('Edicion de Datos', 'No ha seleccionado ningun registro')
         
 def barra_menu(root:tk.Tk):
     
