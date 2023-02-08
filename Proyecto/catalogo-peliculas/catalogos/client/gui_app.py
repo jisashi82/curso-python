@@ -75,6 +75,8 @@ class Frame(tk.Frame):
         
         self.boton_guardar.config(state='disabled')    
         self.boton_cancelar.config(state='disabled')
+        
+        self.id_pelicula=None
     
     def habilitar_campos(self):
         self.mi_duracion.set('')
