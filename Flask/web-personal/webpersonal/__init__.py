@@ -1,5 +1,8 @@
 from flask import Flask
+from webpersonal.views import base
 
 app= Flask(__name__)
 
-import webpersonal.views
+app.register_blueprint(base)
+
+#import webpersonal.views
