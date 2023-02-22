@@ -1,7 +1,9 @@
 from flask import render_template, Blueprint
+from webpersonal.project.models import PROYECTS
 
 project =Blueprint('project', __name__)
 
 @project.route('/projects')
-def projects():
-    return 'Pagina de Proyectos'
+@project.route('/projects/index')
+def index():
+    return render_template('project/index.html', projects=PROYECTS)

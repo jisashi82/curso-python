@@ -30,7 +30,7 @@
                         <a class="nav-link active" href="{{ url_for('base.home') }}" aria-current="page">Home <span class="visually-hidden">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="{{ url_for('project.index' ) }}">Proyectos</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
@@ -51,7 +51,7 @@
   </header>
 
   <!--Block MAIN-->
-  <main id="main">
+  <main id="main" class="container my-4 py-4">
     {% block main %}
         
     {% endblock %}    
