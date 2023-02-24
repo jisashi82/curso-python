@@ -32,4 +32,22 @@ def insert():
 @project.route('/projects/edit/<int:id>')
 def edit(id):
     project = Project.query.get_or_404(id)
-    return render_template('project/edit.html', p=project)
+    return render_template('project/edit.html', project=project)
+
+@project.route('/projects/update/<int:id>', methods=['POST'])
+def update(id):
+    project = Project.query.get_or_404(id)
+    project.title=request.form.get('title')
+    project.description= request.form.get('description')
+    
+    db.session.add(project)
+    db.session.commit()
+    return redirect(url_for('project.index'))
+
+@project.route('/projects/delete/<int:id>')
+def delete(id):
+    project = Project.query.get_or_404(id)
+    db.session.delete(project)
+    db.session.commit()
+    
+    return redirect(url_for('project.index'))

@@ -11,17 +11,17 @@
       <div class="card-body">
         <div class="container">
 
-            <form action="{{ url_for('project.insert' ) }}" method="post">
+            <form action="{{ url_for('project.update', id=project.id ) }}" method="POST">
                 <div class="mb-3 row">
                     <label for="Title" class="col-4 col-form-label">Title</label>
                     <div class="col-8">
-                        <input type="text" class="form-control" name="title" value="{{p.title}}" placeholder="title">
+                        <input type="text" class="form-control" name="title" id="title" value="{{project.title}}" placeholder="title">
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <label for="Description" class="col-4 col-form-label">Description</label>
                     <div class="col-8">
-                        <textarea type="text" class="form-control" name="description" cols="50" rows="5">{{p.description}}</textarea>
+                        <textarea type="text" class="form-control" name="description" id="description" cols="50" rows="5">{{project.description}}</textarea>
                     </div>
                 </div>                
 
