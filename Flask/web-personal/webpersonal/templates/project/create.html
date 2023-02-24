@@ -1,0 +1,45 @@
+{% extends './base.html' %}
+
+{% block title %} Proyectos {% endblock %}
+
+{% block main %}
+
+<div class="row">
+  <div class="col-8">
+    <div class="card">
+        <div class="card-header">Insertar Proyecto</div>
+      <div class="card-body">
+        <div class="container">
+
+            <form action="{{ url_for('project.insert' ) }}" method="post">
+                <div class="mb-3 row">
+                    <label for="Title" class="col-4 col-form-label">Title</label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" name="title" id="title" placeholder="title">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="Description" class="col-4 col-form-label">Description</label>
+                    <div class="col-8">
+                        <textarea type="text" class="form-control" name="description" id="description" cols="50" rows="5"></textarea>
+                    </div>
+                </div>                
+
+                <div class="mb-3 row">
+                    <div class="offset-sm-4 col-sm-8">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    
+
+
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, request,redirect,url_for
 #from webpersonal.project.models import PROYECTS
 from webpersonal.project.models import Project
 from webpersonal import db
@@ -12,3 +12,19 @@ def index():
     db.session.commit()
     #return render_template('project/index.html', projects=PROYECTS)
     return render_template('project/index.html', projects=projects)
+
+@project.route('/projects/create')
+def create():
+    return render_template('project/create.html')
+
+@project.route('/projects/insert', methods=['POST'])
+def insert():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    
+    project= Project(title,description)
+    
+    db.session.add(project)
+    db.session.commit()
+    
+    return redirect(url_for('project.index'))
