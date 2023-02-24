@@ -28,3 +28,8 @@ def insert():
     db.session.commit()
     
     return redirect(url_for('project.index'))
+
+@project.route('/projects/edit/<int:id>')
+def edit(id):
+    project = Project.query.get_or_404(id)
+    return render_template('project/edit.html', p=project)
