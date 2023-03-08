@@ -57,17 +57,17 @@ def search_user(username:str):
 async def auth_user(token:str =Depends(oauth2)):
     exception= HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Credenciales Invalidas',headers={'WWW-Authenticate':'Bearer'})
     try:
-        username = jwt.decode(token, SECRET, ALGORITHM).get('sub')
-        if username == None:
+        sub = jwt.decode(token, SECRET, ALGORITHM).get('sub')
+        if sub == None:
             raise exception   
     except jwt.PyJWTError:
         raise exception
     
-    return search_user(username)
+    return search_user(sub['username'])
             
     
 async def current_user(user:User = Depends(auth_user)):
-    if user.disabled == False:
+    if user.disabled:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Usuario Inactivo')
     
     return user
@@ -75,17 +75,16 @@ async def current_user(user:User = Depends(auth_user)):
 
 @app.post('/login')
 async def login(form:OAuth2PasswordRequestForm = Depends()):
-    user_db = users_db.get(form.username)
-    user = search_user_db(form.username)
+    user = search_user(form.username)
+    user_db = search_user_db(form.username)
     if not user_db:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Usuario no es correcto')
     
-    if not crypt.verify(form.password,user.password):
+    if not crypt.verify(form.password,user_db.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='La contraseña no es correcta')
     
     expire =datetime.utcnow()+timedelta(minutes=ACCESS_TOKEN_DURATION)        
-    #payload={'sub':user.username, 'exp': expire}        
-    payload={'sub':user.username, 'exp': expire}        
+    payload={'sub':user.dict(), 'exp': expire}        
     token= jwt.encode(payload, SECRET, ALGORITHM)
     
     return {'access_token': token, 'token_type':'bearer'}
