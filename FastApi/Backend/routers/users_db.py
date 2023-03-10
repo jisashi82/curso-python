@@ -67,20 +67,14 @@ async def user(user: User):
         return {'message': 'Se ha actualizado el usuario exitosamente'}
 
 
-@router.delete('/{id}')
-async def user(id: int):
-    found = False
-
-    for index, saved_user in enumerate(users_list):
-        if saved_user.id == id:
-            del users_list[index]
-            found = True
-            break
+@router.delete('/{id}', status_code=status.HTTP_202_ACCEPTED)
+async def delete(id: str):
+    found = db_client.local.users.find_one_and_delete({"_id":ObjectId(id)})
 
     if not found:
-        return {'error': 'No se ha eliminado el usuario o no existe'}
+        return {"error": "No se ha eliminado el usuario o no existe"}
     else:
-        return {'message': 'Se ha eliminado el usuario exitosamente'}
+        return {"message": "Se ha eliminado el usuario exitosamente"}
 
 
 def search_user(key:str, value):
