@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from db.models.user import User
 from db.client import db_client
 from db.schemas.user import user_schema, users_schema
+from bson import ObjectId
 
 router = APIRouter(prefix='/userbd', tags=['userbd'], responses={
                    status.HTTP_404_NOT_FOUND: {'message': 'No Encontrado'}})
@@ -14,15 +15,15 @@ async def users():
     return users_schema(db_client.local.users.find())
 
 @router.get('/{id}')
-async def user(id: int):
+async def user(id: str):
     # llamar el path: http://localhost:8000/user/2
-    return search_user(id)
+    return search_user("_id",ObjectId(id))
 
 
 @router.get('/')
-async def user(id: int):
+async def user(id: str):
     # llamar el path: http://localhost:8000/usersquery?id=2
-    return search_user(id)
+   return search_user("_id",ObjectId(id))
 
 
 def search_user(id: int):
@@ -35,7 +36,7 @@ def search_user(id: int):
 
 @router.post('/', response_model=User, status_code=status.HTTP_201_CREATED)
 async def user(user: User):
-    if type(search_user_by_email(user.email)) == User:
+    if type(search_user("email", user.email)) == User:
         raise HTTPException(status_code=status.HTTP_302_FOUND, detail="El usuario ya existe")
 
     #Convertimos a diccionario y eliminamos el id ya qye Mongo lo gestiona
@@ -82,9 +83,9 @@ async def user(id: int):
         return {'message': 'Se ha eliminado el usuario exitosamente'}
 
 
-def search_user_by_email(email:str):
+def search_user(key:str, value):
     try:
-        user_tmp=user_schema( db_client.local.users.find_one({'email':email}))
+        user_tmp=user_schema( db_client.local.users.find_one({key:value}))
         return User(**user_tmp)
     except:
         return {'error':'No se ha encontrado el usuario'}
