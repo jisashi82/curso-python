@@ -51,20 +51,17 @@ async def user(user: User):
     return User(**new_user)
 
 
-@router.put('/')
+@router.put('/',response_model=User, status_code=status.HTTP_200_OK)
 async def user(user: User):
-    found = False
-
-    for index, saved_user in enumerate(users_list):
-        if saved_user.id == user.id:
-            users_list[index] = user
-            found = True
-            break
-
-    if not found:
+    user_dict= dict(user)
+    del user_dict["id"]
+    try:
+        db_client.local.users.find_one_and_replace({"_id":ObjectId(user.id)}, user_dict)
+        
+    except:
         return {'error': 'No se ha actualizado el usuario o no existe'}
-    else:
-        return {'message': 'Se ha actualizado el usuario exitosamente'}
+    
+    return search_user("_id", ObjectId(user.id))
 
 
 @router.delete('/{id}', status_code=status.HTTP_202_ACCEPTED)
