@@ -1,0 +1,6 @@
+fastapi
+passlib
+PyJWT
+pymongo
+python-multipart
+typing_extensions
