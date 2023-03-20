@@ -12,7 +12,7 @@ users_list = []
 
 @router.get('/', response_model=list[User])
 async def users():
-    return users_schema(db_client.local.users.find())
+    return users_schema(db_client.users.find())
 
 @router.get('/{id}')
 async def user(id: str):
@@ -44,10 +44,10 @@ async def user(user: User):
     del user_dict['id']
 
     #insertamos el user_dict en Mongo y recuperamos el id que genera
-    id = db_client.local.users.insert_one(user_dict).inserted_id
+    id = db_client.users.insert_one(user_dict).inserted_id
 
 
-    new_user = user_schema(db_client.local.users.find_one({'_id': id}))
+    new_user = user_schema(db_client.users.find_one({'_id': id}))
     return User(**new_user)
 
 
@@ -56,7 +56,7 @@ async def user(user: User):
     user_dict= dict(user)
     del user_dict["id"]
     try:
-        db_client.local.users.find_one_and_replace({"_id":ObjectId(user.id)}, user_dict)
+        db_client.users.find_one_and_replace({"_id":ObjectId(user.id)}, user_dict)
         
     except:
         return {'error': 'No se ha actualizado el usuario o no existe'}
@@ -66,7 +66,7 @@ async def user(user: User):
 
 @router.delete('/{id}', status_code=status.HTTP_202_ACCEPTED)
 async def delete(id: str):
-    found = db_client.local.users.find_one_and_delete({"_id":ObjectId(id)})
+    found = db_client.users.find_one_and_delete({"_id":ObjectId(id)})
 
     if not found:
         return {"error": "No se ha eliminado el usuario o no existe"}
@@ -76,7 +76,7 @@ async def delete(id: str):
 
 def search_user(key:str, value):
     try:
-        user_tmp=user_schema( db_client.local.users.find_one({key:value}))
+        user_tmp=user_schema( db_client.users.find_one({key:value}))
         return User(**user_tmp)
     except:
         return {'error':'No se ha encontrado el usuario'}
